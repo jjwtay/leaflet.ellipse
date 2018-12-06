@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Leaflet Ellipse Example</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" crossorigin="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.css"
+        crossorigin="" />
+
+    <!--
+	<link rel="stylesheet" href="../Leaflet.draw/dist/leaflet.draw.css" />
+	<link rel="stylesheet" href="../dist/leaflet.draw-ellipse.css" />-->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-easybutton@2.0.0/src/easy-button.css">
+
+    <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet-easybutton@2.0.0/src/easy-button.js"></script>
+    <script src="./example/leaflet.draw-src.js"></script>
+    <script src="./leaflet.ellipse.js"></script>
+    <script src="./example/Leaflet.draw-ellipse.js"></script>
+</head>
+
+<body>
+    <div style='position: fixed; top: 0px; left: 40%;z-index:99999; background: white; padding:15px;border:5px solid black; border-radius:10px;'>
+        <h3>Double click Green Ellipse to toggle editing</h3>
+        <!-- <h3 style='margin: 0px; padding: 0px'><span style='color:hotpink'>Green</span> = moveable ellipse</h3>-->
+    </div>
+    <div id="map" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></div>
+    <a href="https://github.com/jjwtay/leaflet.box/"><img style="z-index: 99999 !important; position: absolute; top: 0; right: 0; border: 0;"
+            src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67"
+            alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+
+    <script>
+        var osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            osmAttrib = '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            osm = L.tileLayer(osmUrl, {
+                maxZoom: 18,
+                attribution: osmAttrib
+            }),
+            map = new L.Map('map', {
+                layers: [osm],
+                center: new L.LatLng(-37.7772, 175.2756),
+                zoom: 15,
+
+            })
+
+        L.easyButton('<span>ell</span>', function () {
+            let options = {
+                shapeOptions: {
+                    color: 'rgb(255,255,0)',
+                    width: 2,
+                    fill: false
+                }
+            }
+            new L.Draw.Ellipse(map, options).enable()
+        }).addTo(map)
+
+        map.on('draw:created', e => {
+            console.log(e)
+
+            switch (e.layerType) {
+                case 'ellipse':
+                    addEllipse(e)
+                    break
+                default:
+                    console.log('not valid layerType')
+            }
+
+        })
+
+        function addEllipse(e) {
+            const center = e.layer.getCenter()
+            const radii = e.layer.getRadii()
+            const tilt = e.layer.getTilt()
+            let newEllipse = L.ellipse(center, radii, tilt,
+                {
+                    fill: true,
+                    fillColor: e.layer.options.fillColor,
+                    fillOpacity: e.layer.options.fillOpacity,
+                    color: e.layer.options.color,
+                    opacity: e.layer.options.opacity
+                }).on('dblclick', e => toggle(e, newEllipse))
+
+            newEllipse.editing.enable()
+
+            map.addLayer(newEllipse)
+        }
+
+        function toggle(e, shape) {
+            L.DomEvent.stop(e)
+
+            if (shape.editing.enabled()) {
+                shape.editing.disable()
+            } else {
+                shape.editing.enable()
+            }
+        }
+
+        let ellipse = L.ellipse(
+            { lat: -37.7772, lng: 175.2756 },
+            [800, 400],
+            30,
+            { color: 'green' }
+        ).on('dblclick', e => toggle(e, ellipse))
+
+        map.addLayer(ellipse)
+    </script>
+</body>
+
+</html>
