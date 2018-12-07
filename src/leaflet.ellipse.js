@@ -19,30 +19,28 @@ const atan2d = (y, x) => RAD_TO_DEG * Math.atan2(y, x)
 
 const closeToZero = (x) => (Math.abs(x) < 0.0000000001 ? 0 : x)
 
-L.Ellipse = L.Polyline.extend({
+L.Ellipse = L.Polygon.extend({
     options: {
         weight: 5,
         color: '#ffff00',
         stroke: true
     },
 
-    initialize (latlng, radii, tilt, options) {
+    initialize: function initialize ({
+        center = [0, 0],
+        semiMinor = 100,
+        semiMajor = 200,
+        tilt = 0,
+        ...options
+    }) {
         L.setOptions(this, options)
-        this._center = latlng
+        this._center = L.latLng(center)
         this._numberOfPoints = 61
         this._startBearing = 0
         this._endBearing = 360
-
-        if (tilt) {
-            this._tiltDeg = tilt
-        } else {
-            this._tiltDeg = 0
-        }
-
-        if (radii) {
-            this._semiMajor = radii[0]
-            this._semiMinor = radii[1]
-        }
+        this._tiltDeg = tilt
+        this._semiMinor = semiMinor
+        this._semiMajor = semiMajor
         this.setLatLngs()
     },
 
@@ -51,18 +49,8 @@ L.Ellipse = L.Polyline.extend({
     },
 
     setCenter: function setCenter (center = { lat: 0, lng: 0 }) {
-        this._center = center
+        this._center = L.latLng(center)
         return this.redraw()
-    },
-
-    setRadii: function setRadii (radii) {
-        this._semiMajor = radii[0]
-        this._semiMinor = radii[1]
-        return this.redraw()
-    },
-
-    getRadii: function getRadii () {
-        return [this._semiMajor, this._semiMinor]
     },
 
     setSemiMinor: function setSemiMinor (val) {
@@ -240,7 +228,7 @@ L.Ellipse = L.Polyline.extend({
         const start = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { lat: 0, lng: 0 }
         const distance = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1
         const bearing = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0
-        const radius = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 6378137
+        const rng = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 6378137
 
 
         const bng = bearing * Math.PI / 180
@@ -248,9 +236,9 @@ L.Ellipse = L.Polyline.extend({
         const lat1 = start.lat * Math.PI / 180
         const lon1 = start.lng * Math.PI / 180
 
-        let lat2 = Math.asin(Math.sin(lat1) * Math.cos(distance / radius) + Math.cos(lat1) * Math.sin(distance / radius) * Math.cos(bng))
+        let lat2 = Math.asin(Math.sin(lat1) * Math.cos(distance / rng) + Math.cos(lat1) * Math.sin(distance / rng) * Math.cos(bng))
 
-        let lon2 = lon1 + Math.atan2(Math.sin(bng) * Math.sin(distance / radius) * Math.cos(lat1), Math.cos(distance / radius) - Math.sin(lat1) * Math.sin(lat2))
+        let lon2 = lon1 + Math.atan2(Math.sin(bng) * Math.sin(distance / rng) * Math.cos(lat1), Math.cos(distance / rng) - Math.sin(lat1) * Math.sin(lat2))
 
         lat2 = lat2 * 180 / Math.PI
         lon2 = lon2 * 180 / Math.PI
@@ -262,6 +250,12 @@ L.Ellipse = L.Polyline.extend({
     }
 })
 
-L.ellipse = function (latlng, radii, tilt, options) {
-    return new L.Ellipse(latlng, radii, tilt, options)
+L.ellipse = function ({
+    center = [0, 0],
+    semiMinor = 100,
+    semiMajor = 200,
+    tilt = 0,
+    ...options
+}) {
+    return new L.Ellipse({ center, semiMinor, semiMajor, tilt, ...options })
 }
