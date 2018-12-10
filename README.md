@@ -1,8 +1,6 @@
 # leaflet-ellipse
 Leaflet plugin for drawing ellipse
 
-Checkout the [Demo] (https://github.com/MoebiusSolutions/leaflet-ellipse)
-
 # Important
 Leaflet.draw-ellipse requires 
 

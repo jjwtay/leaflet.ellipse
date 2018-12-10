@@ -56,8 +56,6 @@
         }).addTo(map)
 
         map.on('draw:created', e => {
-            console.log(e)
-
             switch (e.layerType) {
                 case 'ellipse':
                     addEllipse(e)
