@@ -1,5 +1,5 @@
 {
-  "name": "leaflet.ellipse",
+  "name": "@jjwtay/leaflet.ellipse",
   "version": "1.0.2",
   "description": "Leaflet Rotatable Ellipse",
   "main": "leaflet.ellipse.js",
