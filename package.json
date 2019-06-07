@@ -1,14 +1,14 @@
 {
   "name": "@jjwtay/leaflet.ellipse",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Leaflet Rotatable Ellipse",
   "main": "leaflet.ellipse.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "create": "rollup --config rollup.config.js",
-    "minify": "rollup --config rollup.minify.config.js",
-    "gzip": "rollup --config rollup.gzip.config.js",
-    "dev": "rollup -w --config rollup.config.js",
+    "create": "npx rollup --config rollup.config.js",
+    "minify": "npx rollup --config rollup.minify.config.js",
+    "gzip": "npx rollup --config rollup.gzip.config.js",
+    "dev": "npx rollup -w --config rollup.config.js",
     "build": "npm-run-series create minify gzip"
   },
   "repository": {
@@ -28,11 +28,11 @@
     "eslint": "^4.3.0",
     "geolib": "^2.0.22",
     "npm-run-series": "^1.0.0",
+    "rollup": "^1.14.3",
     "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-gzip": "^1.2.0",
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-uglify": "^2.0.1",
-    "rollup-watch": "^4.3.1",
     "uglify-js": "^3.0.26"
   },
   "dependencies": {

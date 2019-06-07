@@ -14,7 +14,6 @@ const wrapBrg = (brg) => {
     return brg
 }
 
-
 const atan2d = (y, x) => RAD_TO_DEG * Math.atan2(y, x)
 
 const closeToZero = (x) => (Math.abs(x) < 0.0000000001 ? 0 : x)
