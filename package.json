@@ -13,12 +13,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MoebiusSolutions/leaflet-ellipse.git"
+    "url": "git+https://github.com/jjwtay/leaflet.ellipse.git"
   },
   "author": "Kevin Taylor",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/MoebiusSolutions/leaflet-ellipse/issues"
+    "url": "https://github.com/jjwtay/leaflet.ellipse/issues"
   },
   "devDependencies": {
     "babel-core": "^6.25.0",
