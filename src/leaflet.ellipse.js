@@ -46,7 +46,6 @@ L.Ellipse = L.Polygon.extend({
 
     setCenter (center = { lat: 0, lng: 0 }) {
         this._center = L.latLng(center)
-        console.log('set center', center, this)
 
         return this.redraw()
     },
@@ -119,7 +118,7 @@ L.Ellipse = L.Polygon.extend({
         if (this._semiMinor === this._semiMajor) {
             brg = 0
         }
-        console.log(this.getCenter())
+
         const trueStart = wrapBrg(brg)
         for (let i = 0; i < this._numberOfPoints; i++) {
             angle = (i * delta)
