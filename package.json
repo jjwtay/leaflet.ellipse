@@ -1,6 +1,6 @@
 {
   "name": "@jjwtay/leaflet.ellipse",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Leaflet Rotatable Ellipse",
   "main": "leaflet.ellipse.js",
   "scripts": {
