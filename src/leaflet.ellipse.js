@@ -29,7 +29,7 @@ L.Ellipse = L.Polygon.extend({
         center = [0, 0],
         semiMinor = 100,
         semiMajor = 200,
-        tilt = 0,
+        bearing = 0,
         numberOfPoints = 61,
         ...options
     }
@@ -38,18 +38,15 @@ L.Ellipse = L.Polygon.extend({
             .setCenter(center)
             .setSemiMinor(semiMinor)
             .setSemiMajor(semiMajor)
-            .setTilt(tilt)
+            .setBearing(bearing)
             .setNumberOfPoints(numberOfPoints)
         this.setLatLngs()
         this.setRhumb()
     },
 
     setCenter (center = { lat: 0, lng: 0 }) {
-        if (center.lat) {
-            this._center = L.latLng(center.lat, center.lng)
-        } else {
-            this._center = L.latLng(center[0], center[1])
-        }
+        this._center = L.latLng(center)
+        console.log('set center', center, this)
 
         return this.redraw()
     },
@@ -76,13 +73,13 @@ L.Ellipse = L.Polygon.extend({
         return this._semiMajor
     },
 
-    setTilt (tilt) {
-        this._tiltDeg = tilt
+    setBearing (bearing) {
+        this._bearing = bearing
         return this.redraw()
     },
 
-    getTilt () {
-        return this._tiltDeg
+    getBearing () {
+        return this._bearing
     },
 
     getNumberOfPoints () {
@@ -116,13 +113,13 @@ L.Ellipse = L.Polygon.extend({
     getLatLngs () {
         let angle, x, y
         const latlngs = []
-        let brg = wrapBrg(this.getTilt())
+        let brg = wrapBrg(this.getBearing())
         const delta = (360 / (this._numberOfPoints - 1))
 
         if (this._semiMinor === this._semiMajor) {
             brg = 0
         }
-
+        console.log(this.getCenter())
         const trueStart = wrapBrg(brg)
         for (let i = 0; i < this._numberOfPoints; i++) {
             angle = (i * delta)
@@ -168,61 +165,6 @@ L.Ellipse = L.Polygon.extend({
 
     setStyle: L.Path.prototype.setStyle,
 
-    /*
-    computeDestinationPos (
-        start = { lat: 0, lng: 0 },
-        distance = 1,
-        bearing = 0,
-        radius = 6378137,
-        rhumb = this.getRhumb()
-    ) {
-        if (rhumb) {
-            //http://www.movable-type.co.uk/scripts/latlong.html
-
-            const δ = Number(distance) / radius // angular distance in radians
-            const φ1 = start.lat * Math.PI / 180
-            const λ1 = start.lng * Math.PI / 180
-            const θ = bearing * Math.PI / 180
-
-            const Δφ = δ * Math.cos(θ)
-            let φ2 = φ1 + Δφ
-
-            // check for some daft bugger going past the pole, normalise latitude if so
-            if (Math.abs(φ2) > Math.PI / 2) φ2 = φ2 > 0 ? Math.PI - φ2 : -Math.PI - φ2
-
-            const Δψ = Math.log(Math.tan(φ2 / 2 + Math.PI / 4) / Math.tan(φ1 / 2 + Math.PI / 4))
-            const q = Math.abs(Δψ) > 10e-12 ? Δφ / Δψ : Math.cos(φ1) // E-W course becomes ill-conditioned with 0/0
-
-            const Δλ = δ * Math.sin(θ) / q
-            const λ2 = λ1 + Δλ
-
-            //return new LatLon(φ2.toDegrees(), (λ2.toDegrees()+540) % 360 - 180); // normalise to −180..+180°
-            return {
-                lat: φ2 * 180 / Math.PI,
-                lng: ((λ2 * 180 / Math.PI) + 540) % 360 - 180
-            }
-        }
-        const bng = bearing * Math.PI / 180
-
-        const lat1 = start.lat * Math.PI / 180
-        const lon1 = start.lng * Math.PI / 180
-
-        let lat2 = Math.asin(Math.sin(lat1) * Math.cos(distance / radius) +
-            Math.cos(lat1) * Math.sin(distance / radius) * Math.cos(bng))
-
-        let lon2 = lon1 + Math.atan2(Math.sin(bng) * Math.sin(distance / radius) * Math.cos(lat1),
-            Math.cos(distance / radius) - Math.sin(lat1) * Math.sin(lat2))
-
-        lat2 = lat2 * 180 / Math.PI
-        lon2 = lon2 * 180 / Math.PI
-
-        return {
-            lat: lat2,
-            lng: lon2
-        }
-
-    },
-    */
     computeDestinationPos () {
         const start = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { lat: 0, lng: 0 }
         const distance = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1
@@ -254,10 +196,10 @@ L.ellipse = function ({
     center = [0, 0],
     semiMinor = 100,
     semiMajor = 200,
-    tilt = 0,
+    bearing = 0,
     ...options
 }
 ) {
-    return new L.Ellipse({ center, semiMinor, semiMajor, tilt, ...options })
+    return new L.Ellipse({ center, semiMinor, semiMajor, bearing, ...options })
 }
 
